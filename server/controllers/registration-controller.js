@@ -13,14 +13,22 @@ const registration = (req, res) => {
     if (org.slug === reqOrg) {
       // merge default config and custom config
       const conf = merge(defaultConfig, org);
-      const {host} = conf;
+      const {host, settings} = conf;
       let registerUrl = conf.proxy_urls.registration;
       // replacing org_slug param with the slug
       registerUrl = registerUrl.replace("{org_slug}", org.slug);
       const timeout = conf.timeout * 1000;
       const {username, email, password1, password2} = req.body;
-
-      // make AJAX request
+      const postData = {
+        email,
+        username,
+        password1,
+        password2,
+      };
+      if (settings && settings.sms_verification) {
+        postData.phone_number = req.body.phone_number;
+      }
+      // send request
       axios({
         method: "post",
         headers: {
@@ -28,12 +36,7 @@ const registration = (req, res) => {
         },
         url: `${host}${registerUrl}/`,
         timeout,
-        data: qs.stringify({
-          email,
-          username,
-          password1,
-          password2,
-        }),
+        data: qs.stringify(postData),
       })
         .then(response => {
           const authTokenCookie = cookie.sign(

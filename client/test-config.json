@@ -3,16 +3,25 @@
     "name": "Default",
     "slug": "default",
     "default_language": "en",
-    "auto_login": true
+    "auto_login": true,
+    "settings": {
+      "sms_verification": false
+    }
   },
   {
     "name": "test org 1",
     "slug": "test-org-1",
     "default_language": "it",
-    "auto_login": false
+    "auto_login": false,
+    "settings": {
+      "sms_verification": false
+    }
   },
   {
     "name": "test org 2",
-    "slug": "test-org-2"
+    "slug": "test-org-2",
+    "settings": {
+      "sms_verification": false
+    }
   }
 ]
