@@ -6,6 +6,96 @@
     "auto_login": true,
     "settings": {
       "sms_verification": false
+    },
+    "components": {
+      "registration_form": {
+        "input_fields": {
+          "username": {
+            "type": "text",
+            "pattern": "[a-zA-Z@.+\\-_\\d]{1,150}",
+            "pattern_description": {
+              "en": "only letters, numbers, and @/./+/-/_ characters"
+            },
+            "placeholder": {
+              "en": "enter username"
+            },
+            "label": {
+              "en": "username"
+            }
+          },
+          "email": {
+            "type": "email",
+            "pattern": ".+@.+\\..+",
+            "pattern_description": {
+              "en": null
+            },
+            "placeholder": {
+              "en": "email address"
+            },
+            "label": {
+              "en": "email"
+            }
+          },
+          "password": {
+            "type": "password",
+            "pattern": ".{6,}",
+            "pattern_description": {
+              "en": "password must be a minimum of 6 characters"
+            },
+            "placeholder": {
+              "en": "password"
+            },
+            "label": {
+              "en": "password"
+            }
+          },
+          "password_confirm": {
+            "type": "password",
+            "pattern": null,
+            "pattern_description": {
+              "en": null
+            },
+            "placeholder": {
+              "en": "confirm password"
+            },
+            "label": {
+              "en": "confirm"
+            }
+          }
+        },
+        "buttons": {
+          "register": {
+            "label": null,
+            "text": {
+              "en": "sign up"
+            }
+          }
+        },
+        "additional_info_text": {
+          "en": "By signing up, you accept the {terms_and_conditions} and the {privacy_policy} of this WiFi service. "
+        },
+        "links": {
+          "login": {
+            "en": "Already have an account? Log in"
+          }
+        }
+      }
+    },
+    "privacy_policy": {
+      "title": {
+        "en": "privacy policy"
+      },
+      "content": {
+        "en": "..."
+      }
+    },
+    "terms_and_conditions": {
+      "title": {
+        "en": "terms and conditions"
+      },
+      "content": {
+        "en": "..."
+      }
     }
   },
   {
@@ -18,10 +108,97 @@
     }
   },
   {
-    "name": "test org 2",
+    "name": "test org 2 (sms)",
     "slug": "test-org-2",
+    "auto_login": true,
     "settings": {
-      "sms_verification": false
+      "sms_verification": true
+    },
+    "components": {
+      "registration_form": {
+        "input_fields": {
+          "phone_number": {
+            "placeholder": {
+              "en": "enter mobile phone number"
+            },
+            "label": {
+              "en": "moible phone number"
+            },
+            "country": "it"
+          },
+          "email": {
+            "type": "email",
+            "pattern": ".+@.+\\..+",
+            "pattern_description": {
+              "en": null
+            },
+            "placeholder": {
+              "en": "email address"
+            },
+            "label": {
+              "en": "email"
+            }
+          },
+          "password": {
+            "type": "password",
+            "pattern": ".{6,}",
+            "pattern_description": {
+              "en": "password must be a minimum of 6 characters"
+            },
+            "placeholder": {
+              "en": "password"
+            },
+            "label": {
+              "en": "password"
+            }
+          },
+          "password_confirm": {
+            "type": "password",
+            "pattern": null,
+            "pattern_description": {
+              "en": null
+            },
+            "placeholder": {
+              "en": "confirm password"
+            },
+            "label": {
+              "en": "confirm"
+            }
+          }
+        },
+        "buttons": {
+          "register": {
+            "label": null,
+            "text": {
+              "en": "sign up"
+            }
+          }
+        },
+        "additional_info_text": {
+          "en": "By signing up, you accept the {terms_and_conditions} and the {privacy_policy} of this WiFi service. "
+        },
+        "links": {
+          "login": {
+            "en": "Already have an account? Log in"
+          }
+        }
+      }
+    },
+    "privacy_policy": {
+      "title": {
+        "en": "privacy policy"
+      },
+      "content": {
+        "en": "..."
+      }
+    },
+    "terms_and_conditions": {
+      "title": {
+        "en": "terms and conditions"
+      },
+      "content": {
+        "en": "..."
+      }
     }
   }
 ]

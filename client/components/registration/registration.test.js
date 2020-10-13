@@ -11,16 +11,18 @@ import { loadingContextValue } from "../../utils/loading-context";
 import getConfig from "../../utils/get-config";
 import Registration from "./registration";
 
+jest.mock("../../utils/get-config");
 jest.mock("axios");
 
-const defaultConfig = getConfig("default");
-const createTestProps = props => {
+const createTestProps = function(props, configName = "default") {
+  const config = getConfig(configName);
   return {
     language: "en",
     orgSlug: "default",
-    registration: defaultConfig.components.registration_form,
-    privacyPolicy: defaultConfig.privacy_policy,
-    termsAndConditions: defaultConfig.terms_and_conditions,
+    settings: config.settings,
+    registration: config.components.registration_form,
+    privacyPolicy: config.privacy_policy,
+    termsAndConditions: config.terms_and_conditions,
     authenticate: jest.fn(),
     match: {
       path: "default/registration",
@@ -39,6 +41,22 @@ describe("<Registration /> rendering", () => {
     const renderer = new ShallowRenderer();
     const component = renderer.render(<Registration {...props} />);
     expect(component).toMatchSnapshot();
+  });
+});
+
+describe("<Registration /> rendering sms_verification", () => {
+  let props;
+  let wrapper;
+  beforeEach(() => {
+    props = createTestProps({}, "test-org-2");
+    wrapper = shallow(<Registration {...props} />, { context: loadingContextValue });
+  });
+  it("includes phone number field", () => {
+    const renderer = new ShallowRenderer();
+    const component = renderer.render(<Registration {...props} />);
+    expect(component).toMatchSnapshot();
+    wrapper
+      .find("#owisp-registration-phone-number");
   });
 });
 
