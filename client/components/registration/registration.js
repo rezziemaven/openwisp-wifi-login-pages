@@ -42,7 +42,7 @@ export default class Registration extends React.Component {
   handleSubmit(event) {
     const { setLoading } = this.context;
     event.preventDefault();
-    const { registration, orgSlug, authenticate, settings } = this.props;
+    const { registration, orgSlug, authenticate, verifyMobileNumber, settings } = this.props;
     const { input_fields } = registration;
     const { phone_number, email, password1, password2, errors } = this.state;
     if (input_fields.password_confirm) {
@@ -65,7 +65,7 @@ export default class Registration extends React.Component {
       password2,
     };
     // add phone_number if SMS verification is enabled
-    if (settings && settings.sms_verification) {
+    if (settings.sms_verification) {
       postData.phone_number = phone_number;
     }
     setLoading(true);
@@ -86,11 +86,17 @@ export default class Registration extends React.Component {
           password2: "",
           success: true,
         });
-        setLoading(false);
+        // SMS verification flow
+        if (settings.sms_verification) {
+          verifyMobileNumber(true);
+        // simple sign up flow
+        } else {
+          toast.success(registerSuccess, {
+            toastId: mainToastId,
+          });
+        }
         authenticate(true);
-        toast.success(registerSuccess, {
-          toastId: mainToastId,
-        });
+        setLoading(false);
       })
       .catch(error => {
         const { data } = error.response;
@@ -144,7 +150,7 @@ export default class Registration extends React.Component {
                   </div>
                 )}
 
-                {settings && settings.sms_verification && input_fields.phone_number ? (
+                {settings.sms_verification && input_fields.phone_number ? (
                   <>
                     <div className="owisp-registration-label owisp-registration-label-phone-number">
                       <label
@@ -462,4 +468,5 @@ Registration.propTypes = {
     content: PropTypes.object,
   }).isRequired,
   authenticate: PropTypes.func.isRequired,
+  verifyMobileNumber: PropTypes.func.isRequired
 };

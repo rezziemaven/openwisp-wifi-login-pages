@@ -56,13 +56,25 @@ export default class Login extends React.Component {
   handleSubmit(event) {
     const { setLoading } = this.context;
     if (event) event.preventDefault();
-    const { orgSlug, authenticate } = this.props;
+    const { orgSlug, authenticate, verifyMobileNumber, settings } = this.props;
     const { email, password, errors } = this.state;
     const url = loginApiUrl(orgSlug);
     this.setState({
       errors: {},
     });
     setLoading(true);
+
+    const handleAuthentication = function(needsMobileVerification = false) {
+      authenticate(true);
+      toast.success(loginSuccess, {
+        toastId: mainToastId
+      });
+      setLoading(false);
+      if (needsMobileVerification) {
+        verifyMobileNumber(true);
+      }
+    }
+
     return axios({
       method: "post",
       headers: {
@@ -75,14 +87,13 @@ export default class Login extends React.Component {
       }),
     })
       .then(() => {
-        authenticate(true);
-        toast.success(loginSuccess, {
-          toastId: mainToastId
-        });
-        setLoading(false);
+        return handleAuthentication();
       })
       .catch(error => {
         const { data } = error.response;
+        if (error.response.status === 401 && settings.sms_verification) {
+          return handleAuthentication(true);
+        }
         const errorText = getErrorText(error, loginError);
         logError(error, errorText);
         toast.error(errorText);

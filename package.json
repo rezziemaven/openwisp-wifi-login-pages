@@ -84,7 +84,8 @@
   "scripts": {
     "build": "npm run setup && webpack --mode production --progress --config config/webpack.config.js",
     "client": "npm run setup && webpack-dev-server --host 0.0.0.0 --mode development --config config/webpack.config.js",
-    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
+    "coverage": "jest --coverage",
+    "coveralls": "test -f ./coverage/lcov.info && cat ./coverage/lcov.info | coveralls || echo 'no coverage file found'",
     "add-org": "plop --plopfile internals/generators/index.js",
     "server": "npm run setup && nodemon server/start.js",
     "setup": "node config/setup.js",

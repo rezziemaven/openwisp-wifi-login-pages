@@ -30,6 +30,8 @@ export default class Status extends React.Component {
     this.state = {
       username: "",
       password: "",
+      is_active: null,
+      phone_number: "",
       sessions: [],
       loggedOut: false,
     };
@@ -38,7 +40,7 @@ export default class Status extends React.Component {
   }
 
   async componentDidMount() {
-    const {cookies, orgSlug} = this.props;
+    const {cookies, orgSlug, verifyMobileNumber, settings} = this.props;
     // to prevent recursive call in case redirect url is status page
     if (window.top === window.self) {
       try {
@@ -54,7 +56,7 @@ export default class Status extends React.Component {
         //
       }
       const isValid = await this.validateToken();
-      if (isValid) {
+      if (isValid && this.state.is_active) {
         const macaddr = cookies.get(`${orgSlug}_macaddr`);
         if (macaddr) {
           await this.getUserRadiusSessions();
@@ -67,6 +69,10 @@ export default class Status extends React.Component {
           }
         } else if (this.loginFormRef && this.loginFormRef.current)
           this.loginFormRef.current.submit();
+      }
+      // would be better to show a different button in the status page
+      if (isValid && !this.state.is_active && settings.sms_verification) {
+        // verifyMobileNumber(true);
       }
     }
   }
@@ -178,8 +184,8 @@ export default class Status extends React.Component {
           '"response_code" !== "AUTH_TOKEN_VALIDATION_SUCCESSFUL"',
         );
       } else {
-        const {radius_user_token: password, username} = response.data;
-        this.setState({username, password});
+        const {radius_user_token: password, username, is_active, phone_number} = response.data;
+        this.setState({username, password, is_active, phone_number});
       }
       return true;
     } catch (error) {

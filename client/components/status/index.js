@@ -1,25 +1,26 @@
 import {connect} from "react-redux";
-import logout from "../../actions/logout";
+import {logout, verifyMobileNumber} from "../../constants/action-types";
 import Component from "./status";
 
 const mapStateToProps = (state, ownProps) => {
+  const conf = state.organization.configuration;
   return {
-    statusPage: state.organization.configuration.components.status_page,
-    language: state.language,
-    orgSlug: state.organization.configuration.slug,
-    cookies: ownProps.cookies,
+    statusPage: conf.components.status_page,
+    orgSlug: conf.slug,
+    settings: conf.settings,
     captivePortalLoginForm:
-      state.organization.configuration.components.captive_portal_login_form,
+      conf.components.captive_portal_login_form,
     captivePortalLogoutForm:
-      state.organization.configuration.components.captive_portal_logout_form,
+      conf.components.captive_portal_logout_form,
+    language: state.language,
+    cookies: ownProps.cookies,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    logout: (cookies, slug) => {
-      dispatch(logout(cookies, slug));
-    },
+    logout: logout(dispatch),
+    verifyMobileNumber: verifyMobileNumber(dispatch)
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Component);

@@ -15,8 +15,10 @@ import Login from "../login";
 import PasswordConfirm from "../password-confirm";
 import PasswordReset from "../password-reset";
 import Registration from "../registration";
+import SmsVerification from "../sms-verification";
 import Status from "../status";
 import PasswordChange from "../password-change";
+import PhoneNumberChange from "../phone-number-change"
 import LoadingContext from "../../utils/loading-context";
 
 
@@ -46,7 +48,7 @@ export default class OrganizationWrapper extends React.Component {
   render() {
     const { organization, match, cookies } = this.props;
     const { loading } = this.state;
-    const { title, favicon, isAuthenticated } = organization.configuration;
+    const { title, favicon, isAuthenticated, needsSmsVerification } = organization.configuration;
     const orgSlug = organization.configuration.slug;
     const cssPath = organization.configuration.css_path;
     if (organization.exists === true) {
@@ -69,9 +71,23 @@ export default class OrganizationWrapper extends React.Component {
                 <Route
                   path={`${match.path}/registration`}
                   render={props => {
-                    if (isAuthenticated)
-                      return <Redirect to={`/${orgSlug}/status`} />;
+                    if (isAuthenticated && !needsSmsVerification) {
+                        return <Redirect to={`/${orgSlug}/status`} />;
+                    } else if (isAuthenticated && needsSmsVerification) {
+                        return <Redirect to={`/${orgSlug}/sms-verification`} />;
+                    }
                     return <Registration {...props} />;
+                  }}
+                />
+                <Route
+                  path={`${match.path}/sms-verification`}
+                  render={props => {
+                    if (isAuthenticated && needsSmsVerification === false) {
+                        return <Redirect to={`/${orgSlug}/status`} />;
+                    } else if (!isAuthenticated) {
+                        return <Redirect to={`/${orgSlug}/login`} />;
+                    }
+                    return <SmsVerification {...props} cookies={cookies}/>;
                   }}
                 />
                 <Route
@@ -102,7 +118,10 @@ export default class OrganizationWrapper extends React.Component {
                 <Route
                   path={`${match.path}/status`}
                   render={(props) => {
-                    if (isAuthenticated) return <Status {...props} cookies={cookies} />;
+                    if (isAuthenticated && !needsSmsVerification)
+                      return <Status {...props} cookies={cookies} />;
+                    if (isAuthenticated && needsSmsVerification)
+                      return <Redirect to={`/${orgSlug}/sms-verification`} />;
                     return <Redirect to={`/${orgSlug}/login`} />;
                   }}
                 />
@@ -111,6 +130,14 @@ export default class OrganizationWrapper extends React.Component {
                   render={() => {
                     if (isAuthenticated)
                       return <PasswordChange cookies={cookies} />;
+                    return <Redirect to={`/${orgSlug}/login`} />;
+                  }}
+                />
+                <Route
+                  path={`${match.path}/change-phone-number`}
+                  render={(props) => {
+                    if (isAuthenticated)
+                      return <PhoneNumberChange cookies={cookies} />;
                     return <Redirect to={`/${orgSlug}/login`} />;
                   }}
                 />
@@ -185,6 +212,7 @@ OrganizationWrapper.propTypes = {
       slug: PropTypes.string,
       favicon: PropTypes.string,
       isAuthenticated: PropTypes.bool,
+      needsSmsVerification: PropTypes.bool
     }),
     exists: PropTypes.bool,
   }).isRequired,

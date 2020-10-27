@@ -5,6 +5,7 @@ import setOrganization from "../../actions/set-organization";
 import Component from "./organization-wrapper";
 
 const mapStateToProps = (state, ownProps) => {
+  console.log(`needsSmsVerification: ${Boolean(state.organization.configuration.needsSmsVerification)}`);
   return {
     organization: state.organization,
     cookies: ownProps.cookies,
